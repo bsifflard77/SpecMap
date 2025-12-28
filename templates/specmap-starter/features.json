@@ -1,0 +1,19 @@
+{
+  "project": {
+    "name": "{{PROJECT_NAME}}",
+    "type": "{{PROJECT_TYPE}}",
+    "created": "{{DATE}}",
+    "version": "1.0.0"
+  },
+  "features": [],
+  "counters": {
+    "feature": 0,
+    "requirement": 0,
+    "task": 0,
+    "question": 0,
+    "decision": 0,
+    "issue": 0,
+    "acceptance": 0,
+    "milestone": 0
+  }
+}
