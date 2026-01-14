@@ -287,3 +287,34 @@ To push manually:
 - Each criterion should be completable in ONE context window
 - Always include typecheck and test criteria
 - For UI work, include browser verification criterion
+- **Always query system time** for timestamps (don't guess)
+
+## Critical Rule: Fresh Session Per Story
+
+**Each story MUST be executed in a fresh Claude Code session.**
+
+When a story is complete:
+
+1. Commit all changes
+2. Push to GitHub
+3. **STOP** and display:
+
+```
+✅ [Story ID] complete
+📤 Pushed to GitHub
+
+To continue with [Next Story ID]:
+1. Start a new Claude Code session
+2. Say: "start [Next Story ID]" or "continue from progress.md"
+
+The Cold Start Briefing in progress.md has everything needed to resume.
+```
+
+**DO NOT:**
+- Automatically continue to the next story
+- Ask "should I continue?" and then proceed in the same session
+- Skip the session boundary
+
+**WHY:** Fresh sessions ensure full context window for each story. The Cold Start Briefing pattern exists precisely to enable seamless handoff between sessions.
+
+**Override:** Only if user explicitly says "continue in this session" may you proceed without a session break.

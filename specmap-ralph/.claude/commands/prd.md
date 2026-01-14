@@ -39,8 +39,8 @@ Based on your description [and the existing code], here's what I understand:
 - Reusable components: [what we can leverage]
 
 **What you've specified:**
-- [Thing user made clear]
-- [Thing user made clear]
+✓ [Thing user made clear]
+✓ [Thing user made clear]
 
 Is this accurate? Anything to add or correct?
 ```
@@ -96,20 +96,20 @@ Present 3 scope options:
 Based on your requirements, here are scope options:
 
 **Option A: Minimal ([X] stories)**
-- [What's included]
-- [What's included]
-- NOT included: [item]
+✓ [What's included]
+✓ [What's included]
+✗ [What's NOT included]
 
-**Option B: Standard ([Y] stories)** <- Recommended
-- [What's included]
-- [What's included]
-- [What's included]
-- NOT included: [item]
+**Option B: Standard ([Y] stories)** ← Recommended
+✓ [What's included]
+✓ [What's included]
+✓ [What's included]
+✗ [What's NOT included]
 
 **Option C: Full ([Z] stories)**
-- Everything in B
-- [Additional feature]
-- [Additional feature]
+✓ Everything in B
+✓ [Additional feature]
+✓ [Additional feature]
 
 Which scope? (A/B/C)
 ```
@@ -148,7 +148,7 @@ After user selects scope, create PRD.md following this template:
 
 ## Stories
 
-### US-001: [Title] [PENDING_EMOJI]
+### US-001: [Title] ⏳
 **Depends**: None
 **Files**: `path/to/file`
 
@@ -251,7 +251,7 @@ When approved:
 
 | Story | Title | Status | Iterations |
 |-------|-------|--------|------------|
-[One row per story, all pending]
+[One row per story, all ⏳]
 ```
 
 3. Git add and commit both files
@@ -260,10 +260,10 @@ When approved:
 Output:
 
 ```
-PRD.md saved ([X] stories)
-progress.md initialized
-Committed: "feat: add PRD for [feature name]"
-Pushed to remote
+✅ PRD.md saved ([X] stories)
+✅ progress.md initialized
+✅ Committed: "feat: add PRD for [feature name]"
+📤 Pushed to remote
 
 To execute autonomously:
   .\scripts\ralph.ps1
@@ -274,7 +274,7 @@ To execute manually (story by story):
 
 If push fails:
 ```
-Push failed (check network/auth) - committed locally
+⚠️  Push failed (check network/auth) - committed locally
 
 To push manually:
   git push origin HEAD
@@ -287,3 +287,34 @@ To push manually:
 - Each criterion should be completable in ONE context window
 - Always include typecheck and test criteria
 - For UI work, include browser verification criterion
+- **Always query system time** for timestamps (don't guess)
+
+## Critical Rule: Fresh Session Per Story
+
+**Each story MUST be executed in a fresh Claude Code session.**
+
+When a story is complete:
+
+1. Commit all changes
+2. Push to GitHub
+3. **STOP** and display:
+
+```
+✅ [Story ID] complete
+📤 Pushed to GitHub
+
+To continue with [Next Story ID]:
+1. Start a new Claude Code session
+2. Say: "start [Next Story ID]" or "continue from progress.md"
+
+The Cold Start Briefing in progress.md has everything needed to resume.
+```
+
+**DO NOT:**
+- Automatically continue to the next story
+- Ask "should I continue?" and then proceed in the same session
+- Skip the session boundary
+
+**WHY:** Fresh sessions ensure full context window for each story. The Cold Start Briefing pattern exists precisely to enable seamless handoff between sessions.
+
+**Override:** Only if user explicitly says "continue in this session" may you proceed without a session break.

@@ -211,6 +211,61 @@ if ($status -match "behind") {
 }
 ```
 
+### 1.7 Fresh Session Per Story (Critical Rule)
+
+**Each story MUST start in a fresh Claude Code session.**
+
+This is the core principle that makes SpecMap work:
+
+```
+Story US-001 complete
+    ↓
+Git commit + push
+    ↓
+Claude STOPS and tells user: "US-001 complete. Start a new session for US-002."
+    ↓
+User opens new Claude Code session
+    ↓
+New session reads progress.md Cold Start Briefing
+    ↓
+Fresh context window for US-002
+```
+
+#### Why This Matters
+
+| Problem | Solution |
+|---------|----------|
+| Context window fills up over long sessions | Fresh session = full context available |
+| Previous story's code/errors pollute context | Clean slate for each story |
+| Hard to recover from confused state | Just start new session, read progress.md |
+| Token budget exceeded | Each story gets full budget |
+
+#### Implementation
+
+**Claude MUST stop after completing a story:**
+```
+✅ US-001 complete
+📤 Pushed to GitHub
+
+To continue with US-002:
+1. Close this session (or start fresh with /clear)
+2. Open a new Claude Code session
+3. Say: "start US-002" or "continue from progress.md"
+
+The Cold Start Briefing in progress.md has everything needed to resume.
+```
+
+**Claude MUST NOT:**
+- Automatically continue to the next story in the same session
+- Ask "should I continue with US-002?" and then proceed
+- Skip the session boundary
+
+**The Cold Start Briefing exists precisely for this purpose** - it contains all context needed for a new session to pick up exactly where the previous one left off.
+
+#### Manual Override
+
+If user explicitly says "continue in this session" or "don't stop", Claude may proceed. But the default behavior is always: **stop and prompt for new session**.
+
 ---
 
 ## 2. PRD.md Template
