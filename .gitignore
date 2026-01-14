@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Archives (don't include in distribution)
+*.zip
+*.tar.gz
+
+# Node (for any JS-based tooling)
+node_modules/
