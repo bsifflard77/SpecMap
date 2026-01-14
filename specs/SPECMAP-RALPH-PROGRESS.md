@@ -2,8 +2,8 @@
 
 **Project**: SpecMap + Ralph Loop Integration
 **Started**: 2024-01-14
-**Last Updated**: 2025-01-14
-**Status**: Phase 1 Complete - Pushed to GitHub
+**Last Updated**: 2026-01-14 14:15 ET
+**Status**: Phase 1 Complete + Real-World Testing In Progress
 
 ---
 
@@ -11,7 +11,7 @@
 
 > Read this first if starting a new session.
 
-**Current State**: Phase 1 COMPLETE. All files created, drop-in package ready, pushed to GitHub.
+**Current State**: Phase 1 COMPLETE. Tested with real project (TubeDigest). Critical rule added: Fresh Session Per Story.
 
 **What Exists**:
 - Specification: [specs/PHASE-1-SPECIFICATION.md](PHASE-1-SPECIFICATION.md)
@@ -21,153 +21,118 @@
 
 **GitHub**: https://github.com/bsifflard77/SpecMap.git
 
-**Next Action**: Test the system with a real feature, or use it in another project.
+**Test Project**: TubeDigest (https://github.com/bsifflard77/TubeDigest)
+- 2 of 7 stories complete (US-001, US-002)
+- Ready for US-003
 
-**To Use Now**:
-```
-/prd [describe your feature idea]
-```
-
-Then run:
-```powershell
-.\scripts\ralph.ps1
-```
+**Critical Rule Added This Session**: Fresh Session Per Story
+- Each story must execute in a fresh Claude Code session
+- Claude STOPS after story completion, prompts user to start new session
+- See section 1.7 in PHASE-1-SPECIFICATION.md
 
 ---
 
-## Project Structure
+## Session Summary (2026-01-14)
 
-```
-SpecMap/
-├── .claude/commands/prd.md     # /prd slash command (active)
-├── scripts/ralph.ps1           # Autonomous execution loop
-├── templates/                  # Templates for this project
-│   ├── PRD-TEMPLATE.md
-│   └── progress-TEMPLATE.md
-├── specs/                      # Design documentation
-│   ├── PHASE-1-SPECIFICATION.md
-│   └── SPECMAP-RALPH-PROGRESS.md (this file)
-└── specmap-ralph/              # DROP-IN PACKAGE (copy to other projects)
-    ├── README.md
-    ├── .claude/commands/prd.md
-    ├── scripts/ralph.ps1
-    └── templates/
-        ├── PRD-TEMPLATE.md
-        └── progress-TEMPLATE.md
-```
+### Accomplished This Session
 
----
+1. **Tested /prd command** with TubeDigest feature
+   - Brain dump input worked well
+   - Analyzed YTidy codebase for tech stack alignment
+   - Created 7-story PRD with proper structure
 
-## Files Created
+2. **Installed GitHub CLI** on local machine
+   - `winget install GitHub.cli`
+   - Authenticated with `gh auth login`
+   - Now available at `C:\Program Files\GitHub CLI\gh.exe`
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `specs/PHASE-1-SPECIFICATION.md` | Complete Phase 1 spec (~1,600 lines) | ✅ Complete |
-| `specs/SPECMAP-RALPH-PROGRESS.md` | This progress file | ✅ Complete |
-| `templates/PRD-TEMPLATE.md` | PRD template with stories | ✅ Complete |
-| `templates/progress-TEMPLATE.md` | progress.md template (~300 tokens) | ✅ Complete |
-| `scripts/ralph.ps1` | Autonomous execution loop | ✅ Complete |
-| `.claude/commands/prd.md` | /prd slash command | ✅ Complete |
-| `specmap-ralph/` | Drop-in package for other projects | ✅ Complete |
+3. **Consolidated SpecMap repos**
+   - Merged useful files from SpecMap-3 into main SpecMap
+   - Added: LICENSE, CHANGELOG.md, .gitignore, examples/sample-spec.md
+   - Archived SpecMap-3 repo
 
----
+4. **Identified Critical Gap**: Fresh Session Per Story
+   - Claude was continuing to next story without stopping
+   - Added explicit rule to spec and /prd command
+   - Each story = fresh session for full context window
 
-## Key Design Decisions
+5. **Fixed TubeDigest Issues**
+   - US-001 and US-002 weren't being committed/pushed
+   - Manually committed and pushed both stories
+   - Added Claude Code permissions for autonomous operation
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Token budget | ~350 tokens per iteration | Leaves room for reasoning |
-| Question flow | Brain dump first, targeted questions only | More natural UX |
-| Iteration limits | 5 per story, 50 total | Prevents stuck loops |
-| Timestamps | Full datetime on every update | Aids debugging |
-| PRD tracking | Checkboxes in PRD.md | Stories ARE the tracker |
-| Git push strategy | Push after story completion + session boundaries | Balance safety vs. noise |
-| Drop-in package | `specmap-ralph/` folder | Easy adoption in any project |
+### Issues Discovered
+
+| Issue | Fix Applied |
+|-------|-------------|
+| Timestamps were guessed, not queried | Added "always query system time" rule |
+| Stories not committed after completion | Added explicit git commit/push in workflow |
+| Claude continued to next story without stopping | Added "Fresh Session Per Story" rule |
+| Permission prompts interrupting flow | Created `.claude/settings.local.json` with pre-approved permissions |
 
 ---
 
-## How It Works
+## Testing Checklist (Updated)
 
-### The Flow
-```
-/prd [brain dump or existing work reference]
-  ↓
-Claude analyzes, summarizes understanding
-  ↓
-Claude asks ONLY about gaps
-  ↓
-Scope options → User picks → PRD draft → Review → Approve
-  ↓
-Git commit + push (backup PRD to GitHub)
-  ↓
-ralph.ps1 runs autonomous loop
-  ↓
-Each iteration: Read progress → Do ONE criterion → Update both files → Commit
-  ↓
-On story complete: Git push (backup checkpoint)
-  ↓
-Complete when all [x] or hit limits → Final push
-```
-
-### Git Push Points
-- **After /prd approval** - Backup PRD.md + progress.md
-- **After each story complete** - Meaningful checkpoint
-- **On ralph.ps1 exit** - Whether complete, stuck, or interrupted
-- **Before resume** - Pull first to catch changes
-
-### Smart Limits
-- 5 attempts per story (prevents stuck loops)
-- 50 total iterations (safety cap)
-- Same error 3x = stop and ask human
-
----
-
-## What's Next
-
-### Testing Checklist
-- [ ] Test `/prd` command with brain dump input
-- [ ] Test `/prd` command with existing code reference
-- [ ] Test `/prd` command with hybrid input
+- [x] Test `/prd` command with brain dump input
+- [x] Test `/prd` command with existing code reference (YTidy analysis)
+- [x] Test `/prd` command with hybrid input
 - [ ] Test `ralph.ps1` basic execution
 - [ ] Test `ralph.ps1 -Resume` functionality
-- [ ] Verify git push happens at story completion
-
-### Future Enhancements
-- Bash version of ralph.ps1 for cross-platform support
-- More robust error detection in loop
-- CLAUDE.md integration for project-specific rules
-- Analytics/reporting on execution patterns
+- [x] Verify git push happens at story completion (fixed manually)
+- [x] Verify Fresh Session Per Story rule works
 
 ---
 
-## Questions Resolved
+## Files Updated This Session
 
-- ✅ PRD.md updates checkboxes in real-time as criteria complete
-- ✅ progress.md shows exact pickup point (Cold Start Briefing)
-- ✅ Full timestamps on all updates
-- ✅ Brain dump mode supported
-- ✅ Claude analyzes existing code before asking questions
-- ✅ Max iterations: 5 per story, 50 total, configurable
-- ✅ Git push strategy defined and implemented
-- ✅ Drop-in package created: `specmap-ralph/`
-- ✅ /prd implemented as Claude Code slash command
+| File | Change |
+|------|--------|
+| `specs/PHASE-1-SPECIFICATION.md` | Added section 1.7: Fresh Session Per Story |
+| `.claude/commands/prd.md` | Added Critical Rule section + timestamp rule |
+| `specmap-ralph/.claude/commands/prd.md` | Synced with updated command |
+| `LICENSE` | Added (MIT - Monomoy Strategies 2024) |
+| `CHANGELOG.md` | Added with v3.4.0 Ralph integration notes |
+| `.gitignore` | Added |
+| `examples/sample-spec.md` | Added PayPal RULEMAP example |
+
+---
+
+## TubeDigest Test Project Status
+
+**Location**: `E:\Monomoy Strategies\Projects\_Active\TubeDigest`
+**GitHub**: https://github.com/bsifflard77/TubeDigest
+
+| Story | Title | Status |
+|-------|-------|--------|
+| US-001 | Project Setup | ✅ Complete |
+| US-002 | YouTube Video Data Fetching | ✅ Complete |
+| US-003 | AI Summary Generation | ⏳ Ready |
+| US-004 | Features Extraction | ⏳ Pending |
+| US-005 | Evaluation System | ⏳ Pending |
+| US-006 | Timestamp Link Generation | ⏳ Pending |
+| US-007 | UI and Markdown Export | ⏳ Pending |
+
+**To continue TubeDigest**:
+1. Open TubeDigest folder in Claude Code
+2. Say: `start US-003` or `continue from progress.md`
 
 ---
 
 ## Resume Instructions
 
-**To continue development on SpecMap+Ralph**:
-1. Read this file first
-2. Read `specs/PHASE-1-SPECIFICATION.md` for full details
-3. Test with a real feature or enhance the system
+**To continue SpecMap development**:
+1. Read this file
+2. Read `specs/PHASE-1-SPECIFICATION.md` for full spec
+3. Key new section: 1.7 Fresh Session Per Story
 
-**To use in this project**:
-```
-/prd [describe your feature]
-.\scripts\ralph.ps1
-```
+**To continue TubeDigest**:
+1. Open `E:\Monomoy Strategies\Projects\_Active\TubeDigest`
+2. Start fresh Claude Code session
+3. Say: `start US-003`
 
-**To use in another project**:
+**To use SpecMap in a new project**:
 1. Copy `specmap-ralph/` folder to the project
-2. Run `/prd [description]`
-3. Run `.\scripts\ralph.ps1`
+2. Create `.claude/settings.local.json` for permissions
+3. Run `/prd [description]`
+4. Execute stories one session at a time
